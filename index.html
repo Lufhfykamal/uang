@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akademi Uang</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Konfigurasi Tailwind untuk palet warna dan FONT
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        // Palet Emas (Primary)
+                        'm3-primary': '#B8860B', // Dark Gold/Golden Rod
+                        'm3-on-primary': '#FFFFFF',
+                        
+                        // Palet Perak/Abu-abu (Surface & Outline)
+                        'm3-surface': '#F8F7F4', // Light off-white (Surface)
+                        'm3-outline': '#CCCCCC', // Light Silver/Outline
+                    },
+                    // 2. Menambahkan Font Family 'Jakarta Sans'
+                    fontFamily: {
+                        'jakarta': ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<header class="bg-white shadow-md">
+        <div class="container mx-auto p-4 flex justify-center md:justify-start items-center">
+            <h1 class="text-3xl font-bold text-m3-primary flex items-center">
+                <img src="bcs.jpg" 
+                     alt="Logo Bank Anda" 
+                     class="h-8 w-auto mr-2"> 
+               Allstar Semarang
+            </h1>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8 flex-grow">
+        <h2 class="text-3xl font-light mb-8 text-center text-gray-700">Atur Pinjaman Anda dengan Mudah</h2>
+
+        <div class="flex justify-center mb-10">
+            <div class="flex bg-gray-100 rounded-full p-1 border border-m3-outline shadow-inner">
+                <button id="tab-tunggal" class="px-6 py-2 rounded-full font-medium transition duration-300 focus:outline-none">
+                    Bunga Tunggal
+                </button>
+                <button id="tab-majemuk" class="px-6 py-2 rounded-full font-medium transition duration-300 focus:outline-none">
+                    Bunga Majemuk
+                </button>
+            </div>
+        </div>
+
+        <div id="calculator-card" class="bg-white p-6 md:p-10 rounded-3xl shadow-xl border border-m3-outline max-w-4xl mx-auto">
+            <h3 class="text-2xl font-semibold mb-6 text-gray-900">Hitung Bunga Tunggal</h3>
+            
+            <form id="interest-form" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <div>
+                    <label for="pokok" class="block text-sm font-medium text-gray-600 mb-1">
+                        1. Pokok Pinjaman (Rp)
+                    </label>
+                    <input type="number" id="pokok" placeholder="Cth: 10000000" required
+                        class="w-full p-3 rounded-xl border-2 border-m3-outline focus:border-m3-primary focus:ring-1 focus:ring-m3-primary transition duration-200">
+                </div>
+
+                <div>
+                    <label for="bunga" class="block text-sm font-medium text-gray-600 mb-1">
+                        2. Suku Bunga (%)
+                    </label>
+                    <div class="flex rounded-xl border-2 border-m3-outline focus-within:border-m3-primary focus-within:ring-1 focus-within:ring-m3-primary transition duration-200">
+                        <input type="number" id="bunga" placeholder="Cth: 5" required
+                            class="flex-grow p-3 rounded-l-xl focus:outline-none">
+                        <select id="bunga-period" 
+                            class="p-3 bg-gray-50 rounded-r-xl border-l border-m3-outline text-gray-600 focus:outline-none">
+                            <option value="yearly">Per Tahun</option>
+                            <option value="monthly">Per Bulan</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="waktu_bulan" class="block text-sm font-medium text-gray-600 mb-1">
+                        3. Jangka Waktu (Bulan)
+                    </label>
+                    <input type="number" id="waktu_bulan" placeholder="Cth: 18 (untuk 1.5 tahun)" required
+                        class="w-full p-3 rounded-xl border-2 border-m3-outline focus:border-m3-primary focus:ring-1 focus:ring-m3-primary transition duration-200">
+                </div>
+
+                <div id="compounding-freq-group" class="hidden">
+                    <label for="n-period" class="block text-sm font-medium text-gray-600 mb-1">
+                        4. Frekuensi Penggabungan Bunga per Tahun (n)
+                    </label>
+                    <select id="n-period" 
+                        class="w-full p-3 rounded-xl border-2 border-m3-outline bg-white focus:border-m3-primary focus:ring-1 focus:ring-m3-primary transition duration-200">
+                        <option value="1">Tahunan (1)</option>
+                        <option value="2">Semester (2)</option>
+                        <option value="4">Kuartal (4)</option>
+                        <option value="12">Bulanan (12) - Paling Umum</option>
+                    </select>
+                </div>
+
+                <div class="md:col-span-2 mt-6">
+                    <button type="submit" 
+                        class="w-full bg-m3-primary text-m3-on-primary py-4 rounded-full text-lg font-bold shadow-xl 
+                                hover:bg-yellow-700 transition duration-300 transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-m3-primary/50">
+                        HITUNG BUNGA
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <div id="result-area" class="mt-8 bg-white p-6 md:p-10 rounded-3xl shadow-xl border border-m3-outline max-w-4xl mx-auto hidden">
+            <h3 class="text-2xl font-semibold mb-6 text-m3-primary flex items-center">
+                <span class="mr-3 text-3xl">✨</span> Hasil Simulasi Pinjaman
+            </h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+                <div class="p-4 bg-gray-50 rounded-xl border-2 border-m3-outline/50 shadow-sm">
+                    <p class="text-sm text-gray-500">Total Bunga Dibayar</p>
+                    <p id="total-bunga" class="text-3xl font-extrabold text-red-600 mt-1">Rp 0</p>
+                </div>
+                <div class="p-4 bg-gray-50 rounded-xl border-2 border-m3-outline/50 shadow-sm">
+                    <p class="text-sm text-gray-500">Total Pinjaman Akhir</p>
+                    <p id="jumlah-akhir" class="text-3xl font-extrabold text-m3-primary mt-1">Rp 0</p>
+                </div>
+                <div class="p-4 bg-gray-50 rounded-xl border-2 border-m3-outline/50 shadow-sm">
+                    <p class="text-sm text-gray-500">Estimasi Angsuran Bulanan</p>
+                    <p id="angsuran-bulanan" class="text-3xl font-extrabold text-blue-600 mt-1">Rp 0</p>
+                </div>
+            </div>
+
+            <div class="mt-8 p-4 bg-m3-primary/10 rounded-xl text-m3-primary border-l-4 border-m3-primary">
+                <p class="text-base italic">
+                    <span class="font-bold">Penjelasan:</span> <span id="penjelasan">Masukkan data pinjaman Anda di atas, lalu tekan "HITUNG BUNGA" untuk melihat simulasi hasilnya.</span>
+                </p>
+            </div>
+
+            <h4 class="text-xl font-semibold mt-10 mb-4 text-gray-800">Tabel Rincian Pembayaran Bulanan</h4>
+            <div class="overflow-x-auto shadow-lg rounded-xl border border-m3-outline">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-m3-primary/10">
+                        <tr>
+                            <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Bulan ke-</th>
+                            <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-right">Pokok Awal</th>
+                            <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-right">Angsuran Pokok</th>
+                            <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-right text-red-600">Bunga Bulanan</th>
+                            <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-right">Total Cicilan</th>
+                            <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider text-right">Sisa Pokok</th>
+                        </tr>
+                    </thead>
+                    <tbody id="amortization-table-body" class="bg-white divide-y divide-gray-200">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+    
+    <footer class="mt-12 p-6 bg-gray-100 text-center text-sm text-gray-500 border-t border-m3-outline">
+        <p>FinSim | Simulasi Pinjaman Bunga. Disclaimer: Perhitungan ini hanyalah simulasi, bukan penawaran resmi. Selalu konfirmasi dengan lembaga keuangan Anda.</p>
+    </footer>
+
+    <script>
+        const tabTunggal = document.getElementById('tab-tunggal');
+        const tabMajemuk = document.getElementById('tab-majemuk');
+        const compoundingFreqGroup = document.getElementById('compounding-freq-group');
+        const form = document.getElementById('interest-form');
+        const resultArea = document.getElementById('result-area');
+        const tableBody = document.getElementById('amortization-table-body');
+        
+        let isCompoundInterest = false;
+
+        // Fungsi Toggling & Desain (M3 Segmented Button)
+        function setActiveTab(isCompound) {
+            isCompoundInterest = isCompound;
+            if (isCompound) {
+                // Majemuk Aktif
+                tabMajemuk.classList.add('bg-m3-primary', 'text-white', 'shadow-md');
+                tabMajemuk.classList.remove('text-gray-500', 'hover:bg-gray-200');
+                tabTunggal.classList.remove('bg-m3-primary', 'text-white', 'shadow-md');
+                tabTunggal.classList.add('text-gray-500', 'hover:bg-gray-200');
+                compoundingFreqGroup.classList.remove('hidden');
+                document.querySelector('#calculator-card h3').textContent = 'Hitung Bunga Majemuk';
+            } else {
+                // Tunggal Aktif
+                tabTunggal.classList.add('bg-m3-primary', 'text-white', 'shadow-md');
+                tabTunggal.classList.remove('text-gray-500', 'hover:bg-gray-200');
+                tabMajemuk.classList.remove('bg-m3-primary', 'text-white', 'shadow-md');
+                tabMajemuk.classList.add('text-gray-500', 'hover:bg-gray-200');
+                compoundingFreqGroup.classList.add('hidden');
+                document.querySelector('#calculator-card h3').textContent = 'Hitung Bunga Tunggal';
+            }
+            // Reset hasil saat tab berubah
+            resultArea.classList.add('hidden');
+            document.getElementById('penjelasan').textContent = 'Masukkan data pinjaman Anda di atas, lalu tekan "HITUNG BUNGA" untuk melihat simulasi hasilnya.';
+        }
+
+        // Event Listener untuk Toggling
+        tabTunggal.addEventListener('click', () => setActiveTab(false));
+        tabMajemuk.addEventListener('click', () => setActiveTab(true));
+
+        // Fungsi untuk format Rupiah
+        function formatRupiah(angka, prefix = 'Rp ') {
+            let number_string = angka.toString().replace(/[^,\d]/g, ''),
+                rupiah = number_string.split('.')[0],
+                ribuan = rupiah.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            return prefix + ribuan;
+        }
+        
+        // Fungsi untuk menghasilkan data rincian bulanan (Tabel Amortisasi)
+        function generateAmortizationTable(P, angsuran, r_monthly, t_months, isCompound) {
+            tableBody.innerHTML = ''; // Bersihkan tabel lama
+            
+            let currentBalance = P;
+            
+            for (let month = 1; month <= t_months; month++) {
+                let interestPayment = 0;
+                let principalPayment = 0;
+                let totalMonthlyPayment = angsuran;
+                let startingBalance = currentBalance;
+
+                if (isCompound) {
+                    // Logika Majemuk (Anuitas/Efektif): Bunga dihitung dari saldo pokok terakhir
+                    interestPayment = startingBalance * r_monthly;
+                    principalPayment = angsuran - interestPayment;
+                    totalMonthlyPayment = angsuran; // Total cicilan tetap (Anuitas)
+                } else {
+                    // Logika Tunggal (Flat Rate): Bunga dan Pokok dibagi rata
+                    // Total bunga dibagi rata ke semua bulan (I = P * r_monthly * t_months)
+                    let totalFlatInterest = P * r_monthly * t_months;
+                    interestPayment = totalFlatInterest / t_months;
+                    
+                    // Pokok Pinjaman dibagi rata ke semua bulan
+                    principalPayment = P / t_months;
+                    
+                    // Total cicilan dihitung dari rata-rata pokok + rata-rata bunga
+                    totalMonthlyPayment = principalPayment + interestPayment;
+                }
+                
+                // --- Penyesuaian Sisa Pokok ---
+                let remainingBalance = startingBalance - principalPayment;
+
+                // Pastikan sisa pokok tidak negatif di bulan terakhir
+                if (month === t_months) {
+                    // Di bulan terakhir, pastikan sisa pinjaman menjadi 0
+                    principalPayment += remainingBalance;
+                    remainingBalance = 0;
+                } else if (remainingBalance < 0) {
+                    remainingBalance = 0;
+                }
+
+                currentBalance = remainingBalance;
+                
+                // Memasukkan data ke baris tabel
+                const row = tableBody.insertRow();
+                
+                row.innerHTML = `
+                    <td class="px-3 py-2 whitespace-nowrap text-center text-sm font-medium">${month}</td>
+                    <td class="px-3 py-2 whitespace-nowrap text-right text-sm">${formatRupiah(startingBalance.toFixed(0), '')}</td>
+                    <td class="px-3 py-2 whitespace-nowrap text-right text-sm">${formatRupiah(principalPayment.toFixed(0), '')}</td>
+                    <td class="px-3 py-2 whitespace-nowrap text-right text-sm text-red-600">${formatRupiah(interestPayment.toFixed(0), '')}</td>
+                    <td class="px-3 py-2 whitespace-nowrap text-right text-sm font-semibold">${formatRupiah(totalMonthlyPayment.toFixed(0), '')}</td>
+                    <td class="px-3 py-2 whitespace-nowrap text-right text-sm">${formatRupiah(currentBalance.toFixed(0), '')}</td>
+                `;
+            }
+        }
+
+
+        // Event Listener untuk Kalkulasi
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const P = parseFloat(document.getElementById('pokok').value); 
+            let r_percent = parseFloat(document.getElementById('bunga').value); 
+            const bungaPeriod = document.getElementById('bunga-period').value; 
+            const t_months = parseFloat(document.getElementById('waktu_bulan').value); 
+            
+            if (isNaN(P) || isNaN(r_percent) || isNaN(t_months) || P <= 0 || r_percent < 0 || t_months <= 0) {
+                alert("Mohon isi semua kolom dengan angka yang valid.");
+                return;
+            }
+
+            // --- Logika Konversi Suku Bunga ---
+            let r; // Suku Bunga Tahunan dalam Desimal (r)
+            
+            if (bungaPeriod === 'monthly') {
+                // Jika input adalah per bulan, ubah menjadi tahunan
+                r = (r_percent / 100) * 12; 
+            } else { // 'yearly'
+                // Jika input sudah per tahun
+                r = r_percent / 100;
+            }
+            // ------------------------------------
+
+            const r_monthly = r / 12;          // Suku Bunga Desimal Bulanan
+            const t_years = t_months / 12;     // Waktu dalam Tahun 
+            
+            let A = 0;           // Jumlah Akhir
+            let totalBunga = 0;
+            let angsuran = 0;    // Angsuran bulanan
+
+            if (isCompoundInterest) {
+                // Perhitungan Anuitas/Angsuran Bulanan (Rumus Bunga Majemuk)
+                const n_periods = t_months; // Total periode (bulan)
+                const i = r_monthly; // Suku bunga per periode (bulan)
+                
+                // Rumus Payment (PMT) untuk Anuitas
+                if (i === 0) {
+                    angsuran = P / n_periods; // Jika bunga 0
+                } else {
+                    // Rumus PMT: P * [i * (1 + i)^n_periods] / [(1 + i)^n_periods - 1]
+                    // Angsuran: P * (i / (1 - (1 + i)^(-n)))
+                    angsuran = P * (i / (1 - Math.pow(1 + i, -n_periods)));
+                }
+
+                A = angsuran * n_periods;
+                totalBunga = A - P;
+                
+                document.getElementById('penjelasan').textContent = `Menggunakan Bunga Majemuk (Anuitas), cicilan bulanan Anda tetap (${formatRupiah(angsuran.toFixed(0))}), tetapi alokasi Bunga akan menurun setiap bulan seiring sisa pokok berkurang.`;
+            } else {
+                // Logika Bunga Tunggal (Flat Rate)
+                A = P * (1 + r_monthly * t_months);
+                totalBunga = A - P;
+                
+                // Angsuran total dibagi rata (pokok + bunga)
+                angsuran = A / t_months; 
+                
+                document.getElementById('penjelasan').textContent = `Total bunga yang harus dibayar dengan Bunga Tunggal (Flat Rate) adalah ${formatRupiah(totalBunga.toFixed(0))}. Cicilan pokok dan bunga dihitung sama rata setiap bulan.`;
+            }
+
+            // Menampilkan Hasil
+            document.getElementById('total-bunga').textContent = formatRupiah(totalBunga.toFixed(0));
+            document.getElementById('jumlah-akhir').textContent = formatRupiah(A.toFixed(0));
+            document.getElementById('angsuran-bulanan').textContent = formatRupiah(angsuran.toFixed(0));
+            
+            // Panggil fungsi untuk membuat tabel rincian bulanan
+            generateAmortizationTable(P, angsuran, r_monthly, t_months, isCompoundInterest);
+
+            resultArea.classList.remove('hidden');
+
+            // Scroll ke area hasil
+            resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        // Set default ke Bunga Tunggal saat load
+        setActiveTab(false);
+    </script>
+</body>
+</html>
